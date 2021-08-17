@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db:
+    image: postgres
+    environment: 
+      POSTGRES_PASSWORD: 'postgres'
+  django:
+    hostname: bContainer
+    build: .
+    command: poetry shell
+    volumes:
+      - $HOME/.ssh:/root/.ssh
+      - $HOME/.gitconfig:/root/.gitconfig
+      - .:/home/django/app
+    depends_on:
+      - db
