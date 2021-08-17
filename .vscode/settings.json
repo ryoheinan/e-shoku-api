@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "**/.vscode-server": true,
+    "**/.gitconfig": true,
+    "**/.ssh": true,
+    "**/.bash_profile": true
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  }
+}

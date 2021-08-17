@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "coenraads.bracket-pair-colorizer",
+    "ms-azuretools.vscode-docker",
+    "saikou9901.evilinspector",
+    "ms-python.python",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "redhat.vscode-yaml"
+  ]
+}
