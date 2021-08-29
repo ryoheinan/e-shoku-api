@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Book
+from .models import User, Room
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -8,6 +8,6 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         # 対象モデルクラスを指定
-        model = Book
+        model = User
         # 利用しないモデルのフィールドを指定
         exclude = ['created_at']
