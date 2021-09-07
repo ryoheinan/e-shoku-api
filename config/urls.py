@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app import views
 
 urlpatterns = [
+    # admin
     path('admin/', admin.site.urls),
+    # ユーザモデルの取得(一覧)・登録
+    path('app/users/', views.UserListCreateAPIView.as_view()),
+    # ユーザモデルの取得(詳細)・更新・一部更新・削除
+    path('app/users/<pk>/', views.UserRetrieveUpdateDestroyAPIView.as_view()),
+    # ルームモデルの取得(一覧)・登録
+    path('app/room/', views.RoomListCreateAPIView.as_view()),
+    # ルームモデルの取得(詳細)・更新・一部更新・削除
+    path('app/room/<pk>/', views.RoomRetrieveUpdateDestroyAPIView.as_view()),
 ]
