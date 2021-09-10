@@ -2,8 +2,8 @@ import jwt
 from config import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
-from app.models import MyUser
-from app.serializers import UserSerializer
+from api.models import MyUser
+from api.serializers import UserSerializer
 
 
 class MyJWTAuthentication(BaseAuthentication):

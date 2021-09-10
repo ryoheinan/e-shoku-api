@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'app',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
     )
 }
 
-AUTH_USER_MODEL = 'app.MyUser'
+AUTH_USER_MODEL = 'api.MyUser'
 
 
 # Internationalization
