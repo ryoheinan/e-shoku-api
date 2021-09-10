@@ -14,18 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from app import views
+from django.urls import path, include
 
 urlpatterns = [
     # admin
+    path('app/', include('app.urls')),
     path('admin/', admin.site.urls),
-    # ユーザモデルの取得(一覧)・登録
-    path('app/users/', views.UserListCreateAPIView.as_view()),
-    # ユーザモデルの取得(詳細)・更新・一部更新・削除
-    path('app/users/<pk>/', views.UserRetrieveUpdateDestroyAPIView.as_view()),
-    # ルームモデルの取得(一覧)・登録
-    path('app/room/', views.RoomListCreateAPIView.as_view()),
-    # ルームモデルの取得(詳細)・更新・一部更新・削除
-    path('app/room/<pk>/', views.RoomRetrieveUpdateDestroyAPIView.as_view()),
 ]
