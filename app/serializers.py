@@ -1,6 +1,5 @@
 from rest_framework import serializers
-
-from .models import User, Room
+from .models import MyUser, Room
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         # 対象モデルクラスを指定
-        model = User
+        model = MyUser
         # 利用しないモデルのフィールドを指定
         exclude = ['created_at']
 

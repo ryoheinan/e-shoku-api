@@ -1,35 +1,36 @@
-import time
 import jwt
-from config.settings import SECRET_KEY
-from django.contrib.auth.hashers import make_password, check_password
+from config import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
-from datetime import datetime, timedelta
+from app.models import MyUser
+from app.serializers import UserSerializer
 
 
-from app.models import CustomUser
+class MyJWTAuthentication(BaseAuthentication):
+    """
+    HTTP-Onlyのトークン確認
+    """
 
-
-class NormalAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        username = request._request.POST.get("username")
-        password = request._request.POST.get("password")
-        user_obj = CustomUser.objects.filter(username=username).first()
-        if not user_obj:
-            raise exceptions.AuthenticationFailed('認証失敗')
-        elif not check_password(password, user_obj.password):
-            raise exceptions.AuthenticationFailed('パスワードがあってません')
-        token = generate_jwt(user_obj)
-        return (token, None)
+        JWT = request.COOKIES.get("user_token")
+        if not JWT:
+            raise exceptions.AuthenticationFailed("No token")
+        user = self.decode_jwt(JWT)
+        print(user.display_name)  # For Debug
+        if user.is_active:
+            serializer = UserSerializer(user)
+            return (user, serializer.data)
+        raise exceptions.AuthenticationFailed("User is not active")
 
-    def authenticate_header(self, request):
-        pass
-
-
-def generate_jwt(user):
-    dt = datetime.now() + timedelta(days=1)
-    result = jwt.encode({
-        "username": user.username,
-        "exp": dt.utcfromtimestamp(dt.timestamp())
-    }, SECRET_KEY)
-    return result
+    def decode_jwt(self, JWT):
+        try:
+            payload = jwt.decode(
+                jwt=JWT, key=settings.SECRET_KEY, algorithms=["HS256"]
+            )
+            return MyUser.objects.get(id=payload["user_id"])
+        except jwt.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed("Activations link expired")
+        except jwt.exceptions.DecodeError:
+            raise exceptions.AuthenticationFailed("Invalid Token")
+        except MyUser.DoesNotExist:
+            raise exceptions.AuthenticationFailed("user does not exists")

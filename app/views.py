@@ -1,26 +1,64 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
-
-from .models import User, Room
+from rest_framework.permissions import IsAuthenticated
+from .models import MyUser, Room
 from .serializers import UserSerializer, UserListSerializer, RoomSerializer, RoomListSerializer
+from rest_framework_simplejwt import views as jwt_views
+from rest_framework_simplejwt import exceptions as jwt_exp
+from .utils.auth import MyJWTAuthentication
+
+
+class TokenObtainView(jwt_views.TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except jwt_exp.TokenError as e:
+            raise jwt_exp.InvalidToken(e.args[0])
+        print(serializer.validated_data)
+        res = Response({"status": "success"}, status=status.HTTP_200_OK)
+        try:
+            res.delete_cookie("user_token")
+        except Exception as e:
+            print(e)
+
+        res.set_cookie(
+            "user_token",
+            serializer.validated_data["access"],
+            max_age=60 * 30,
+            httponly=True,
+        )
+        res.set_cookie(
+            "refresh_token",
+            serializer.validated_data["refresh"],
+            max_age=60 * 60 * 24 * 90,
+            httponly=True,
+        )
+        return res
 
 
 class UserListCreateAPIView(views.APIView):
     """ユーザモデルの取得(一覧)・登録APIクラス"""
 
+    authentication_classes = [MyJWTAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
     def get(self, request, *args, **kwargs):
         """ユーザモデルの取得(一覧)APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトの一覧を取得
-        user_list = User.objects.all()
+        # user_list = MyUser.objects.all()
         # シリアライザオブジェクトを作成
-        serializer = UserSerializer(instance=user_list, many=True)
+        # serializer = UserSerializer(instance=user_list, many=True)
         # レスポンスオブジェクトを返す
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response({"data": "Hi"}, status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
-        """ユーザモデルの登録APIに対応するハンドラメソッド"""
+    """def post(self, request, *args, **kwargs):
+        """
+    # ユーザモデルの登録APIに対応するハンドラメソッド
+    """
 
         # 子ラリアライザオブジェクトを作成
         serializer = UserSerializer(data=request.data)
@@ -30,6 +68,7 @@ class UserListCreateAPIView(views.APIView):
         serializer.save()
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_201_CREATED)
+    """
 
 
 class UserRetrieveUpdateDestroyAPIView(views.APIView):
@@ -39,7 +78,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         """ユーザモデルの取得(詳細)APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトを取得
-        user = get_object_or_404(User, pk=pk)
+        user = get_object_or_404(MyUser, pk=pk)
         # シリアライザオブジェクトを作成
         serializer = UserSerializer(instance=user)
         # レスポンスオブジェクトを返す
@@ -49,7 +88,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         """ユーザモデルの更新APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトを取得
-        user = get_object_or_404(User, pk=pk)
+        user = get_object_or_404(MyUser, pk=pk)
         # シリアライザオブジェクトを作成
         serializer = UserSerializer(instance=user, data=request.data)
         # バリデーション
@@ -63,7 +102,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         """ユーザモデルの一部更新APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトを取得
-        user = get_object_or_404(User, pk=pk)
+        user = get_object_or_404(MyUser, pk=pk)
         # モデルオブジェクトを作成
         serializer = UserSerializer(
             instance=user, data=request.data, partial=True)
@@ -78,7 +117,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         """ユーザモデルの削除APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトを取得
-        user = get_object_or_404(User, pk=pk)
+        user = get_object_or_404(MyUser, pk=pk)
         # モデルオブジェクトを削除
         user.delete()
         # レスポンスオブジェクトを返す
@@ -157,7 +196,7 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         """ロームモデルの削除APIに対応するハンドラメソッド"""
 
         # モデルオブジェクトを取得
-        room = get_object_or_404(User, pk=pk)
+        room = get_object_or_404(MyUser, pk=pk)
         # モデルオブジェクトを削除
         room.delete()
         # レスポンスオブジェクトを返す
