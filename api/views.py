@@ -40,6 +40,33 @@ class TokenObtainView(jwt_views.TokenObtainPairView):
         return res
 
 
+class TokenRefresh(jwt_views.TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except jwt_exp.TokenError as e:
+            raise jwt_exp.InvalidToken(e.args[0])
+        res = Response({"status": "success"}, status=status.HTTP_200_OK)
+        res.delete_cookie("user_token")
+        res.set_cookie(
+            "user_token",
+            serializer.validated_data["access"],
+            max_age=60 * 30,
+            httponly=True,
+        )
+        return res
+
+
+def refresh_get(request):
+    try:
+        RT = request.COOKIES["refresh_token"]
+        return JsonResponse({"refresh": RT}, safe=False)
+    except Exception as e:
+        print(e)
+        return None
+
+
 class UserListCreateAPIView(views.APIView):
     """ユーザモデルの取得(一覧)・登録APIクラス"""
 
