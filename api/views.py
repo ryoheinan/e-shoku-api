@@ -11,33 +11,38 @@ class UserListCreateAPIView(views.APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        """ユーザモデルの取得(一覧)APIに対応するハンドラメソッド"""
+        """
+        ユーザモデルの取得(一覧)APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトの一覧を取得
-        # user_list = MyUser.objects.all()
+        user_list = MyUser.objects.all()
         # シリアライザオブジェクトを作成
-        # serializer = UserSerializer(instance=user_list, many=True)
+        serializer = UserSerializer(instance=user_list, many=True)
         # レスポンスオブジェクトを返す
-        return Response({"data": "Hi"}, status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
-    """def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
-    # ユーザモデルの登録APIに対応するハンドラメソッド
-    """
+        ユーザモデルの登録APIに対応するハンドラメソッド
+        """
 
-        # 子ラリアライザオブジェクトを作成
-        serializer = UserSerializer(data=request.data)
+        # dataを辞書型に変換
+        user_info = request.data.dict()
+        user_info['internal_id'] = request.user.internal_id
+        serializer = UserSerializer(instance=request.user, data=user_info)
         # バリデーション
         serializer.is_valid(raise_exception=True)
         # モデルオブジェクトを登録
         serializer.save()
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_201_CREATED)
-    """
 
 
 class UserRetrieveUpdateDestroyAPIView(views.APIView):
-    """ユーザモデルの取得(詳細)・更新・一部更新・削除APIクラス"""
+    """
+    ユーザモデルの取得(詳細)・更新・一部更新・削除APIクラス
+    """
 
     def get(self, request, pk, *args, **kwargs):
         """ユーザモデルの取得(詳細)APIに対応するハンドラメソッド"""
@@ -49,7 +54,9 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def put(self, request, pk, *args, **kwargs):
-        """ユーザモデルの更新APIに対応するハンドラメソッド"""
+        """
+        ユーザモデルの更新APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
@@ -63,7 +70,9 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def patch(self, request, pk, *args, **kwargs):
-        """ユーザモデルの一部更新APIに対応するハンドラメソッド"""
+        """
+        ユーザモデルの一部更新APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
@@ -78,7 +87,9 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def delete(self, request, pk, *args, **kwargs):
-        """ユーザモデルの削除APIに対応するハンドラメソッド"""
+        """
+        ユーザモデルの削除APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
@@ -89,10 +100,14 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
 
 
 class RoomListCreateAPIView(views.APIView):
-    """ルームモデルの取得(一覧)・登録APIクラス"""
+    """
+    ルームモデルの取得(一覧)・登録APIクラス
+    """
 
     def get(self, request, *args, **kwargs):
-        """ルームモデルの取得(一覧)APIに対応するハンドラメソッド"""
+        """
+        ルームモデルの取得(一覧)APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトの一覧を取得
         room_list = Room.objects.all()
@@ -102,7 +117,9 @@ class RoomListCreateAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_201_CREATED)
 
     def post(self, request, *args, **kwargs):
-        """ルームモデルの登録APIに対応するハンドラメソッド"""
+        """
+        ルームモデルの登録APIに対応するハンドラメソッド
+        """
 
         # 子ラリアライザオブジェクトを作成
         serializer = RoomSerializer(data=request.data)
@@ -115,10 +132,14 @@ class RoomListCreateAPIView(views.APIView):
 
 
 class RoomRetrieveUpdateDestroyAPIView(views.APIView):
-    """ルームモデルの取得(詳細)・更新・一部更新・削除APIクラス"""
+    """
+    ルームモデルの取得(詳細)・更新・一部更新・削除APIクラス
+    """
 
     def get(self, request, pk, *args, **kwargs):
-        """ルームモデルの取得(詳細)APIに対応するハンドラメソッド"""
+        """
+        ルームモデルの取得(詳細)APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
@@ -128,7 +149,9 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def put(self, request, pk, *args, **kwargs):
-        """ルームモデルの更新APIに対応するハンドラメソッド"""
+        """
+        ルームモデルの更新APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
@@ -142,7 +165,9 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def patch(self, request, pk, *args, **kwargs):
-        """ルームモデルの一部更新APIに対応するハンドラメソッド"""
+        """
+        ルームモデルの一部更新APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
@@ -157,7 +182,9 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def delete(self, request, pk, *args, **kwargs):
-        """ロームモデルの削除APIに対応するハンドラメソッド"""
+        """
+        ロームモデルの削除APIに対応するハンドラメソッド
+        """
 
         # モデルオブジェクトを取得
         room = get_object_or_404(MyUser, pk=pk)

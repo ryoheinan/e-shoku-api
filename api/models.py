@@ -50,7 +50,7 @@ class MyUser(AbstractBaseUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     internal_id = models.CharField(
-        verbose_name='内部識別子', max_length=128, unique=True)
+        verbose_name='auth0識別子', max_length=128, unique=True)
     username = models.CharField(
         verbose_name='ユーザーネーム', max_length=20, unique=True)
     display_name = models.CharField(verbose_name='名前', max_length=100)

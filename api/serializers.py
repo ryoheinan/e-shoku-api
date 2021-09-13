@@ -9,7 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
         # 対象モデルクラスを指定
         model = MyUser
         # 利用しないモデルのフィールドを指定
-        exclude = ['created_at']
+        exclude = ['password', 'created_at',
+                   'last_login', 'is_active', 'is_admin']
 
 
 class UserListSerializer(serializers.ListSerializer):
