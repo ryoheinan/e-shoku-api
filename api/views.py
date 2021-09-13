@@ -1,77 +1,14 @@
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
 from rest_framework import status, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from .models import MyUser, Room
 from .serializers import UserSerializer, UserListSerializer, RoomSerializer, RoomListSerializer
-from rest_framework_simplejwt import views as jwt_views
-from rest_framework_simplejwt import exceptions as jwt_exp
-from .utils.auth import MyJWTAuthentication
-
-
-class TokenObtainView(jwt_views.TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        print(request.data)
-        serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except jwt_exp.TokenError as e:
-            raise jwt_exp.InvalidToken(e.args[0])
-        print(serializer.validated_data)
-        res = Response({"status": "success"}, status=status.HTTP_200_OK)
-        try:
-            res.delete_cookie("user_token")
-        except Exception as e:
-            print(e)
-
-        res.set_cookie(
-            "user_token",
-            serializer.validated_data["access"],
-            max_age=60 * 30,
-            httponly=True,
-        )
-        res.set_cookie(
-            "refresh_token",
-            serializer.validated_data["refresh"],
-            max_age=60 * 60 * 24 * 90,
-            httponly=True,
-        )
-        return res
-
-
-class TokenRefresh(jwt_views.TokenRefreshView):
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except jwt_exp.TokenError as e:
-            raise jwt_exp.InvalidToken(e.args[0])
-        res = Response({"status": "success"}, status=status.HTTP_200_OK)
-        res.delete_cookie("user_token")
-        res.set_cookie(
-            "user_token",
-            serializer.validated_data["access"],
-            max_age=60 * 30,
-            httponly=True,
-        )
-        return res
-
-
-def refresh_get(request):
-    try:
-        RT = request.COOKIES["refresh_token"]
-        return JsonResponse({"refresh": RT}, safe=False)
-    except Exception as e:
-        print(e)
-        return None
 
 
 class UserListCreateAPIView(views.APIView):
-    """ユーザモデルの取得(一覧)・登録APIクラス"""
-
-    authentication_classes = [MyJWTAuthentication, ]
-    permission_classes = [IsAuthenticated, ]
+    """
+    ユーザモデルの取得(一覧)・登録APIクラス
+    """
 
     def get(self, request, *args, **kwargs):
         """ユーザモデルの取得(一覧)APIに対応するハンドラメソッド"""
@@ -104,7 +41,6 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
 
     def get(self, request, pk, *args, **kwargs):
         """ユーザモデルの取得(詳細)APIに対応するハンドラメソッド"""
-
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
         # シリアライザオブジェクトを作成
