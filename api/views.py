@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from .models import MyUser, Room
-from .serializers import UserSerializer, UserListSerializer, RoomSerializer, RoomListSerializer
+from .serializers import UserSerializer, RoomSerializer
 
 
 class UserListCreateAPIView(views.APIView):
