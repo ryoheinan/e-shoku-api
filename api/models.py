@@ -6,15 +6,15 @@ import uuid
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, display_name, date_of_birth, gender, password=None):
+    def create_user(self, internal_id, username, display_name, date_of_birth, gender, password=None):
         """
         ユーザー作成時のプログラム
         """
-        if not email:
-            raise ValueError('Users must have an email address')
+        if not internal_id:
+            raise ValueError('Users must have an internal_id address')
 
         user = self.model(
-            email=self.normalize_email(email),
+            internal_id=internal_id,
             password=password,
             username=username,
             display_name=display_name,
@@ -26,12 +26,12 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, display_name, date_of_birth, gender, password=None):
+    def create_superuser(self, internal_id, username, display_name, date_of_birth, gender, password=None):
         """
         superuser作成時のプログラム
         """
         user = self.create_user(
-            email,
+            internal_id,
             password=password,
             username=username,
             display_name=display_name,
@@ -49,11 +49,8 @@ class MyUser(AbstractBaseUser):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    internal_id = models.CharField(
+        verbose_name='内部識別子', max_length=128, unique=True)
     username = models.CharField(
         verbose_name='ユーザーネーム', max_length=20, unique=True)
     display_name = models.CharField(verbose_name='名前', max_length=100)
@@ -67,11 +64,11 @@ class MyUser(AbstractBaseUser):
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'internal_id'
     REQUIRED_FIELDS = ['username', 'display_name', 'date_of_birth', 'gender']
 
     def __str__(self):
-        return self.email
+        return self.internal_id
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -108,3 +105,6 @@ class Room(models.Model):
     invite_code = models.IntegerField(
         verbose_name='招待コード', null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
+
+    def __str__(self):
+        return self.room_name

@@ -6,9 +6,12 @@ import requests
 
 
 def jwt_get_username_from_payload_handler(payload):
-    username = payload.get('sub').replace('|', '.')
-    authenticate(remote_user=username)
-    return username
+    print("============================")
+    print(payload)
+    user = payload.get('sub').replace('|', '.')
+    print(user)
+    authenticate(remote_user=user)
+    return user
 
 
 def jwt_decode_token(token):
