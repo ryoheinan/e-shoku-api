@@ -8,15 +8,19 @@ USERS_URL = reverse('users')
 
 
 class PublicApiTests(APITestCase):
+    """
+    認証なしの検証クラス
+    """
+
     def setUp(self):
         self.client = APIClient()
 
     def test_auth_required(self):
         """
-        認証必須になっているかどうかのテスト
+        認証なしのPOST検証（異常系）
         """
         data = {
-            'internalid': 'internalid',
+            'internalid': 'internalid.auth0',
             'username': 'testuser',
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
@@ -28,18 +32,22 @@ class PublicApiTests(APITestCase):
 
 
 class PrivateApiTests(APITestCase):
+    """
+    認証ありの検証クラス
+    """
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            'internalid', 'testuser', 'Test', '2020-01-01', 'FEMALE', 'test_Secret!')
+            'internalid.auth0', 'testuser', 'Test', '2020-01-01', 'FEMALE', 'test_Secret!')
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
     def test_users_post(self):
         """
-        認証付きでユーザー作成可能かどうかのテスト
+        認証ありのPOST検証（正常系）
         """
         data = {
-            'internalid': 'internalid',
+            'internalid': 'internalid.auth0',
             'username': 'testuser',
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
