@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv, find_dotenv
 DEBUG = False
 
@@ -160,15 +161,23 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
-    SECRET_KEY = os.environ['SECRET_KEY']
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': 'db',
-            'PORT': 5432,
+    if sys.argv[1] == 'test':
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
         }
-    }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'postgres',
+                'USER': 'postgres',
+                'PASSWORD': 'postgres',
+                'HOST': 'db',
+                'PORT': 5432,
+            }
+        }
