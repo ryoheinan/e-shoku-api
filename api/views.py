@@ -27,8 +27,7 @@ class UserListCreateAPIView(views.APIView):
         ユーザモデルの登録APIに対応するハンドラメソッド
         """
 
-        # dataを辞書型に変換
-        user_info = request.data.dict()
+        user_info = request.data
         user_info['internal_id'] = request.user.internal_id
         serializer = UserSerializer(instance=request.user, data=user_info)
         # バリデーション
