@@ -12,15 +12,15 @@ class UserListCreateAPIView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        ユーザモデルの取得(一覧)APIに対応するハンドラメソッド
+        ユーザモデルの取得APIに対応するハンドラメソッド
         """
 
-        # モデルオブジェクトの一覧を取得
-        user_list = MyUser.objects.all()
+        # モデルオブジェクトを取得
+        user = get_object_or_404(MyUser, pk=request.user.pk)
         # シリアライザオブジェクトを作成
-        serializer = UserSerializer(instance=user_list, many=True)
+        serializer = UserSerializer(instance=user)
         # レスポンスオブジェクトを返す
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         """
