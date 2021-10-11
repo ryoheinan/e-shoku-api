@@ -163,7 +163,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = "DENY"
@@ -180,6 +179,7 @@ if not DEBUG:
             }
         }
     else:
+        SECURE_SSL_REDIRECT = True
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
