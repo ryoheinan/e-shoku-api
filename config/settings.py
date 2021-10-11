@@ -25,9 +25,6 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = ['e-shoku.herokuapp.com']
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -164,6 +161,7 @@ if not DEBUG:
     import django_heroku
     import dj_database_url
 
+    ALLOWED_HOSTS = ['e-shoku.herokuapp.com']
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True
