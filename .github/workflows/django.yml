@@ -1,6 +1,8 @@
-name: Django PR Check
+name: Django CI
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -31,3 +33,4 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+        
