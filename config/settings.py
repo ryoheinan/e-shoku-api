@@ -161,6 +161,9 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
+    import django_heroku
+    import dj_database_url
+
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True
@@ -180,13 +183,6 @@ if not DEBUG:
         }
     else:
         SECURE_SSL_REDIRECT = True
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'postgres',
-                'USER': 'postgres',
-                'PASSWORD': 'postgres',
-                'HOST': 'db',
-                'PORT': 5432,
-            }
-        }
+        django_heroku.settings(locals())
+        DATABASES['default'] = dj_database_url.config(
+            conn_max_age=600, ssl_require=True)
