@@ -37,6 +37,19 @@ jobs:
       - name: Run Tests
         run: |
           python manage.py test
+      - name: Check requirements.txt
+        id: changes
+        run: |
+          git add -N .
+          echo "::set-output name=count::$(git diff --name-only | wc -l)"
+      - name: Update requirements.txt
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Update requirements.txt"
+          git push
+        if: steps.changes.outputs.count > 0
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:

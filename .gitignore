@@ -134,4 +134,3 @@ dmypy.json
 **/.DS_Store
 **/.bash_profile
 .python-version
-**/requirements.txt
