@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import resolve
-from api.views import UserListCreateAPIView, RoomListCreateAPIView
+from api.views import UserAPIView, RoomListCreateAPIView
 
 
 class TestRouting(TestCase):
@@ -11,7 +11,7 @@ class TestRouting(TestCase):
         """
 
         view = resolve('/api/users/')
-        self.assertEqual(view.func.view_class, UserListCreateAPIView)
+        self.assertEqual(view.func.view_class, UserAPIView)
 
     def test_room_url(self):
         """

@@ -5,7 +5,7 @@ from .models import MyUser, Room
 from .serializers import UserSerializer, RoomSerializer
 
 
-class UserListCreateAPIView(views.APIView):
+class UserAPIView(views.APIView):
     """
     ユーザモデルの取得(一覧)・登録APIクラス
     """
