@@ -113,7 +113,7 @@ class RoomListCreateAPIView(views.APIView):
         # シリアライザオブジェクトを作成
         serializer = RoomSerializer(instance=room_list, many=True)
         # レスポンスオブジェクトを返す
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         """
