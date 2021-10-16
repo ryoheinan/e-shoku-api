@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from api.models import Room
 
 
 ROOMS_URL = reverse('rooms')
@@ -56,5 +57,5 @@ class PrivateApiTests(APITestCase):
         }
         res = self.client.post(ROOMS_URL, data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(get_user_model().objects.count(), 1)
-        # self.assertEqual(get_user_model().objects.get().username, 'testuser')
+        self.assertEqual(Room.objects.count(), 1)
+        self.assertEqual(Room.objects.get().room_name, 'Test Room')
