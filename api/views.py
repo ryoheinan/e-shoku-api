@@ -98,7 +98,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RoomListCreateAPIView(views.APIView):
+class RoomAPIView(views.APIView):
     """
     ルームモデルの取得(一覧)・登録APIクラス
     """
