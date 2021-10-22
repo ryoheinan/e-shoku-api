@@ -59,6 +59,7 @@ class MyUser(AbstractBaseUser):
     gender = models.CharField(verbose_name='性別', max_length=6, choices=[
         ('MALE', '男性'), ('FEMALE', '女性'), ('PNTS', '無回答'), ('OTHERS', 'その他')])
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
+    is_info_filled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
