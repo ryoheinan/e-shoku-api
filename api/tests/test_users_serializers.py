@@ -20,6 +20,26 @@ class TestUserSerializer(TestCase):
         serializer = UserSerializer(data=input_data)
         self.assertEqual(serializer.is_valid(), True)
 
+    def test_input_valid_if_is_info_filled_is_true(self):
+        """
+        UserSerializerのis_info_filledの更新確認（正常系）
+        """
+
+        input_data = {
+            'internal_id': 'internalid.auth0',
+            'username': 'testuser',
+            'display_name': 'Test San',
+            'date_of_birth': '2020-01-01',
+            'gender': 'FEMALE',
+        }
+        user = get_user_model().objects.create_user(
+            'internalid.auth0', 'testuser', 'New Test San', '2020-01-01', 'FEMALE'
+        )
+        serializer = UserSerializer(instance=user, data=input_data)
+        serializer.is_valid()
+        save_result = serializer.save()
+        self.assertEqual(save_result.is_info_filled, True)
+
     def test_input_invalid_if_username_is_blank(self):
         """
         UserSerializerのusernameバリデーション確認（異常系）
@@ -78,5 +98,6 @@ class TestUserSerializer(TestCase):
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
             'gender': 'FEMALE',
+            'is_info_filled': False,
         }
         self.assertDictEqual(serializer.data, expected_data)
