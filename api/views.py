@@ -98,7 +98,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RoomListCreateAPIView(views.APIView):
+class RoomAPIView(views.APIView):
     """
     ルームモデルの取得(一覧)・登録APIクラス
     """
@@ -113,7 +113,7 @@ class RoomListCreateAPIView(views.APIView):
         # シリアライザオブジェクトを作成
         serializer = RoomSerializer(instance=room_list, many=True)
         # レスポンスオブジェクトを返す
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         """

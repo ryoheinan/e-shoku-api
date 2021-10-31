@@ -59,6 +59,7 @@ class MyUser(AbstractBaseUser):
     gender = models.CharField(verbose_name='性別', max_length=6, choices=[
         ('MALE', '男性'), ('FEMALE', '女性'), ('PNTS', '無回答'), ('OTHERS', 'その他')])
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
+    is_info_filled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -96,14 +97,15 @@ class Room(models.Model):
         db_table = 'room'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ManyToManyField(MyUser, verbose_name='ユーザー')
-    role = models.CharField(verbose_name='役職', max_length=5, choices=[
-                            ('HOST', '主催者'), ('GUEST', '参加者')])
-    room_name = models.CharField(verbose_name='ルーム名', max_length=20)
-    members = models.IntegerField(verbose_name='人数', default=6)
-    topic = models.TextField(verbose_name='トピック')
+    hosts = models.ManyToManyField(
+        MyUser, verbose_name='主催者', related_name='host_users')
+    guests = models.ManyToManyField(
+        MyUser, verbose_name='参加者', blank=True, related_name='guest_users')
+    room_name = models.CharField(verbose_name='ルーム名', max_length=128)
+    topic = models.TextField(verbose_name='トピック', null=True, blank=True)
     invite_code = models.IntegerField(
-        verbose_name='招待コード', null=True, blank=True)
+        verbose_name='招待コード', unique=True, null=True, blank=True)
+    is_private = models.BooleanField(verbose_name='非公開')
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
 
     def __str__(self):

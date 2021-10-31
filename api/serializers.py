@@ -14,6 +14,16 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = ['password', 'created_at',
                    'last_login', 'is_active', 'is_admin']
 
+    def update(self, instance, validated_data):
+        """
+        ModelSerializerのupdate関数をオーバーライドした関数
+        """
+
+        super().update(instance, validated_data)
+        instance.is_info_filled = True
+        instance.save()
+        return instance
+
 
 class UserListSerializer(serializers.ListSerializer):
     """
