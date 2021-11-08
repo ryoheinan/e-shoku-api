@@ -102,6 +102,7 @@ class Room(models.Model):
     guests = models.ManyToManyField(
         MyUser, verbose_name='参加者', blank=True, related_name='guest_users')
     room_name = models.CharField(verbose_name='ルーム名', max_length=128)
+    description = models.TextField(verbose_name='ルームの説明')
     topic = models.TextField(verbose_name='トピック', null=True, blank=True)
     invite_code = models.IntegerField(
         verbose_name='招待コード', unique=True, null=True, blank=True)
