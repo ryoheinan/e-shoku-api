@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV PATH="$POETRY_HOME/bin:$PATH"
 
-RUN apt-get update -qq && apt-get install -y vim git curl && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get install -y vim git curl libpq-dev gcc && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
 
 RUN mkdir -p /home/django/app
