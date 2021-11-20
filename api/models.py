@@ -110,7 +110,7 @@ class Room(models.Model):
     topic = models.TextField(verbose_name='トピック', null=True, blank=True)
     invite_code = models.IntegerField(
         verbose_name='招待コード', unique=True, null=True, blank=True)
-    is_private = models.BooleanField(verbose_name='非公開')
+    is_private = models.BooleanField(verbose_name='非公開', default=False)
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
 
     def __str__(self):
