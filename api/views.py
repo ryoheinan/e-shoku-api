@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .models import MyUser, Room
 from .serializers import UserSerializer, RoomSerializer
@@ -42,6 +43,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
     """
     ユーザモデルの取得(詳細)・更新・一部更新・削除APIクラス
     """
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk, *args, **kwargs):
         """ユーザモデルの取得(詳細)APIに対応するハンドラメソッド"""
@@ -102,6 +104,7 @@ class RoomAPIView(views.APIView):
     """
     ルームモデルの取得(一覧)・登録APIクラス
     """
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         """
@@ -109,7 +112,7 @@ class RoomAPIView(views.APIView):
         """
 
         # モデルオブジェクトの一覧を取得
-        room_list = Room.objects.all()
+        room_list = Room.objects.filter(is_private=False)
         # シリアライザオブジェクトを作成
         serializer = RoomSerializer(instance=room_list, many=True)
         # レスポンスオブジェクトを返す
@@ -134,6 +137,7 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
     """
     ルームモデルの取得(詳細)・更新・一部更新・削除APIクラス
     """
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk, *args, **kwargs):
         """
