@@ -26,6 +26,9 @@ class PublicApiTests(APITestCase):
             'hosts': [self.user.id],
             'guests': [],
             'room_name': 'Test Room',
+            'description': 'This is a test room',
+            'datetime': '2021-08-20T09:28:33+09:00',
+            'capacity': 100,
             'topic': 'game,music',
             'is_private': False
         }
@@ -52,6 +55,9 @@ class PrivateApiTests(APITestCase):
             'hosts': [self.user.id],
             'guests': [],
             'room_name': 'Test Room',
+            'description': 'This is a test room',
+            'datetime': '2021-08-20T09:28:33+09:00',
+            'capacity': 100,
             'topic': 'game,music',
             'is_private': False
         }
