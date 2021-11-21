@@ -200,8 +200,7 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         """
 
         # モデルオブジェクトを取得
-        room = get_object_or_404(MyUser, pk=pk)
-        # print(request.user.display_name)
+        room = get_object_or_404(Room, pk=pk)
         if not room.hosts.filter(pk=request.user.id).exists():
             raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを削除
