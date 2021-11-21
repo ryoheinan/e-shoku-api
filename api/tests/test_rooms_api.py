@@ -65,8 +65,11 @@ class PrivateApiTests(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Room.objects.count(), 1)
         self.assertEqual(Room.objects.get().room_name, 'Test Room')
+        res = self.client.delete(f"{ROOMS_URL}{Room.objects.get().id}/")
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Room.objects.count(), 0)
 
-    def test_users_unauthenticated(self):
+    def test_users_unauthorized(self):
         """
         他ユーザーアクセス時のPATCH・DELETE検証（異常系）
         """
