@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status, views
+from rest_framework import exceptions, status, views
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .models import MyUser, Room
@@ -61,6 +61,8 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
+        if user != request.user:
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # シリアライザオブジェクトを作成
         serializer = UserSerializer(instance=user, data=request.data)
         # バリデーション
@@ -77,6 +79,8 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
+        if user != request.user:
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを作成
         serializer = UserSerializer(
             instance=user, data=request.data, partial=True)
@@ -94,6 +98,8 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         user = get_object_or_404(MyUser, pk=pk)
+        if user != request.user:
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを削除
         user.delete()
         # レスポンスオブジェクトを返す
@@ -158,6 +164,8 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
+        if not room.hosts.filter(pk=request.user.id).exists():
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # シリアライザオブジェクトを作成
         serializer = RoomSerializer(instance=room, data=request.data)
         # バリデーション
@@ -174,6 +182,8 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
+        if not room.hosts.filter(pk=request.user.id).exists():
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを作成
         serializer = RoomSerializer(
             instance=room, data=request.data, partial=True)
@@ -186,11 +196,14 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
 
     def delete(self, request, pk, *args, **kwargs):
         """
-        ロームモデルの削除APIに対応するハンドラメソッド
+        ルームモデルの削除APIに対応するハンドラメソッド
         """
 
         # モデルオブジェクトを取得
         room = get_object_or_404(MyUser, pk=pk)
+        # print(request.user.display_name)
+        if not room.hosts.filter(pk=request.user.id).exists():
+            raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを削除
         room.delete()
         # レスポンスオブジェクトを返す
