@@ -52,8 +52,8 @@ class PrivateApiTests(APITestCase):
         認証ありのPOST検証（正常系）
         """
         data = {
-            'hosts': [self.user.id],
-            'guests': [],
+            'hosts': [str(self.user.id)],
+            'guests': [str(self.user.id)],
             'room_name': 'Test Room',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
@@ -65,6 +65,9 @@ class PrivateApiTests(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Room.objects.count(), 1)
         self.assertEqual(Room.objects.get().room_name, 'Test Room')
+        data['invite_code'] = None
+        data['id'] = res.data['id']
+        self.assertDictEqual(res.data, data)
         res = self.client.delete(f"{ROOMS_URL}{Room.objects.get().id}/")
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Room.objects.count(), 0)
