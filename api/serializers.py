@@ -33,10 +33,24 @@ class UserListSerializer(serializers.ListSerializer):
     child = UserSerializer()
 
 
+class UserMinInfoSerializer(serializers.ModelSerializer):
+    """
+    最小限のユーザ情報を提供するシリアライザ
+    """
+
+    class Meta:
+        # 対象モデルクラスを指定
+        model = MyUser
+        # 利用するモデルのフィールドを指定
+        fields = ['id', 'username']
+
+
 class RoomSerializer(serializers.ModelSerializer):
     """
     ルームモデル用シリアライザ
     """
+
+    guests = UserMinInfoSerializer(read_only=True, many=True)
 
     class Meta:
         # 対象モデルクラスを指定
