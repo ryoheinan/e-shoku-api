@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 from api.serializers import RoomSerializer
 
 
@@ -16,7 +17,10 @@ class TestRoomSerializer(TestCase):
         input_data = {
             'hosts': [self.user.id],
             'guests': [],
-            'room_name': 'Test Room',
+            'room_name': 'Test Room 1234',
+            'description': 'This is a test room',
+            'datetime': '2021-08-20T09:28:33+09:00',
+            'capacity': 100,
             'topic': 'game,music',
             'invite_code': 5000,
             'is_private': False
@@ -33,14 +37,19 @@ class TestRoomSerializer(TestCase):
             'hosts': [self.user.id],
             'guests': [self.user.id],
             'room_name': '',
+            'description': 'This is a test room',
+            'datetime': '2021-08-20T09:28:33+09:00',
+            'capacity': 0,
             'topic': 'game,music',
             'invite_code': 5000,
             'is_private': False
         }
         serializer = RoomSerializer(data=input_data)
         self.assertEqual(serializer.is_valid(), False)
-        self.assertCountEqual(serializer.errors.keys(), ['room_name'])
+        self.assertCountEqual(serializer.errors.keys(),
+                              ['room_name', 'capacity'])
         self.assertCountEqual(
             [str(x) for x in serializer.errors['room_name']],
             ['この項目は空にできません。']
         )
+        self.assertRaisesMessage(ValidationError, ['この値は1以上にしてください。'])

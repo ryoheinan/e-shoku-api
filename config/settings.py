@@ -15,6 +15,10 @@ import os
 import sys
 from dotenv import load_dotenv, find_dotenv
 DEBUG = False
+IS_TEST = False
+
+if sys.argv[1] == 'test':
+    IS_TEST = True
 
 try:
     from .local_settings import *  # noqa
@@ -174,6 +178,7 @@ if not DEBUG:
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
     if sys.argv[1] == 'test':
+        IS_TEST = True
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',

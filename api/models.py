@@ -2,6 +2,7 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 from django.db import models
+from django.core.validators import MinValueValidator
 import uuid
 
 
@@ -102,10 +103,14 @@ class Room(models.Model):
     guests = models.ManyToManyField(
         MyUser, verbose_name='参加者', blank=True, related_name='guest_users')
     room_name = models.CharField(verbose_name='ルーム名', max_length=128)
+    description = models.TextField(verbose_name='ルームの説明')
+    datetime = models.DateTimeField(verbose_name='開催日時', null=True, blank=True)
+    capacity = models.IntegerField(
+        verbose_name='定員', validators=[MinValueValidator(1)], default=10)
     topic = models.TextField(verbose_name='トピック', null=True, blank=True)
     invite_code = models.IntegerField(
         verbose_name='招待コード', unique=True, null=True, blank=True)
-    is_private = models.BooleanField(verbose_name='非公開')
+    is_private = models.BooleanField(verbose_name='非公開', default=False)
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
 
     def __str__(self):
