@@ -52,8 +52,8 @@ class PrivateApiTests(APITestCase):
         認証ありのPOST検証（正常系）
         """
         data = {
-            'hosts': [str(self.user.id)],
-            'guests': [str(self.user.id)],
+            'hosts': [self.user.id],
+            'guests': [self.user.id],
             'room_name': 'Test Room',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',

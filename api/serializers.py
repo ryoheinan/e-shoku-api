@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import MyUser, Room
+from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -50,13 +51,20 @@ class RoomSerializer(serializers.ModelSerializer):
     ルームモデル用シリアライザ
     """
 
-    guests = UserMinInfoSerializer(read_only=True, many=True)
-
     class Meta:
         # 対象モデルクラスを指定
         model = Room
         # 利用しないモデルのフィールドを指定
         exclude = ['created_at']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if not settings.IS_TEST:
+            ret['hosts'] = UserMinInfoSerializer(
+                instance.hosts.all(), many=True).data
+            ret['guests'] = UserMinInfoSerializer(
+                instance.guests.all(), many=True).data
+        return ret
 
 
 class RoomListSerializer(serializers.ListSerializer):
