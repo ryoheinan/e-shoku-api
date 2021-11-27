@@ -46,6 +46,14 @@ class UserMinInfoSerializer(serializers.ModelSerializer):
         fields = ['id', 'username']
 
 
+class UserIdSerializer(serializers.Serializer):
+    """
+    ユーザIDのみを扱うシリアライザ
+    """
+
+    id = serializers.UUIDField(format='hex_verbose')
+
+
 class RoomSerializer(serializers.ModelSerializer):
     """
     ルームモデル用シリアライザ
