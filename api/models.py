@@ -115,3 +115,21 @@ class Room(models.Model):
 
     def __str__(self):
         return self.room_name
+
+    def join(self, user):
+        """
+        ルームに参加する
+        """
+        if user not in self.guests.all():
+            self.guests.add(user)
+        else:
+            raise ValueError('Invalid value')
+
+    def leave(self, user):
+        """
+        ルームの参加をキャンセルする
+        """
+        if user in self.guests.all():
+            self.guests.remove(user)
+        else:
+            raise ValueError('Invalid value')
