@@ -3,7 +3,7 @@ from rest_framework import exceptions, status, views
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .models import MyUser, Room
-from .serializers import UserSerializer, RoomSerializer
+from .serializers import UserIdSerializer, UserSerializer, RoomSerializer
 
 
 class UserAPIView(views.APIView):
@@ -207,3 +207,59 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         room.delete()
         # レスポンスオブジェクトを返す
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RoomJoinAPIView(views.APIView):
+    """
+    ルーム参加APIのためのクラス
+    """
+
+    def post(self, request, pk, *args, **kwargs):
+        """
+        ルーム参加APIに対応するハンドラメソッド
+        """
+
+        serializer = UserIdSerializer(data=request.data)
+        # バリデーション
+        serializer.is_valid(raise_exception=True)
+        user_id = serializer.validated_data['id']
+        if user_id != request.user.id:
+            raise exceptions.AuthenticationFailed('Unauthorized access')
+        # モデルオブジェクトを取得
+        room = get_object_or_404(Room, pk=pk)
+        user = get_object_or_404(MyUser, pk=user_id)
+        # ユーザーをルームに参加
+        try:
+            room.join(user)
+        except ValueError as e:
+            raise exceptions.ValidationError({"detail": e})
+        # レスポンスオブジェクトを返す
+        return Response(status=status.HTTP_200_OK)
+
+
+class RoomLeaveAPIView(views.APIView):
+    """
+    ルーム参加キャンセルAPIのためのクラス
+    """
+
+    def post(self, request, pk, *args, **kwargs):
+        """
+        ルーム参加キャンセルAPIに対応するハンドラメソッド
+        """
+
+        serializer = UserIdSerializer(data=request.data)
+        # バリデーション
+        serializer.is_valid(raise_exception=True)
+        user_id = serializer.validated_data['id']
+        if user_id != request.user.id:
+            raise exceptions.AuthenticationFailed('Unauthorized access')
+        # モデルオブジェクトを取得
+        room = get_object_or_404(Room, pk=pk)
+        user = get_object_or_404(MyUser, pk=user_id)
+        # ルームへの参加キャンセル
+        try:
+            room.leave(user)
+        except ValueError as e:
+            raise exceptions.ValidationError({"detail": e})
+        # レスポンスオブジェクトを返す
+        return Response(status=status.HTTP_200_OK)
