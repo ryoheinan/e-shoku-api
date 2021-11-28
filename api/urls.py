@@ -10,4 +10,8 @@ urlpatterns = [
     path('rooms/', views.RoomAPIView.as_view(), name='rooms'),
     # ルームモデルの取得(詳細)・更新・一部更新・削除
     path('rooms/<pk>/', views.RoomRetrieveUpdateDestroyAPIView.as_view()),
+    # ルーム参加API
+    path('rooms/join/<pk>/', views.RoomJoinAPIView.as_view()),
+    # ルーム参加キャンセルAPI
+    path('rooms/leave/<pk>/', views.RoomLeaveAPIView.as_view()),
 ]
