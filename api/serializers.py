@@ -72,6 +72,8 @@ class RoomSerializer(serializers.ModelSerializer):
                 instance.hosts.all(), many=True).data
             ret['guests'] = UserMinInfoSerializer(
                 instance.guests.all(), many=True).data
+            ret['hosts_count'] = instance.hosts.all().count()
+            ret['guests_count'] = instance.guests.all().count()
         return ret
 
 
