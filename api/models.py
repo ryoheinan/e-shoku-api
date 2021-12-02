@@ -59,6 +59,10 @@ class MyUser(AbstractBaseUser):
         verbose_name='生年月日', null=True, blank=True)
     gender = models.CharField(verbose_name='性別', max_length=6, choices=[
         ('MALE', '男性'), ('FEMALE', '女性'), ('PNTS', '無回答'), ('OTHERS', 'その他')])
+    description = models.CharField(
+        verbose_name='自己紹介', max_length=500, null=True, blank=True)
+    image_url = models.URLField(
+        verbose_name='プロフィール画像URL', null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
     is_info_filled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
