@@ -48,7 +48,7 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
     def get(self, request, pk, *args, **kwargs):
         """ユーザモデルの取得(詳細)APIに対応するハンドラメソッド"""
         # モデルオブジェクトを取得
-        user = get_object_or_404(MyUser, pk=pk)
+        user = get_object_or_404(MyUser, pk=pk, is_info_filled=True)
         # シリアライザオブジェクトを作成
         serializer = UserSerializer(instance=user)
         # レスポンスオブジェクトを返す
