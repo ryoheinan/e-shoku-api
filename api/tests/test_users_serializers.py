@@ -72,14 +72,20 @@ class TestUserSerializer(TestCase):
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
             'gender': 'UNKNOWN',
+            'image_url': 'test_user.profile.example.com',
             'password': 'test_Secret!'
         }
         serializer = UserSerializer(data=input_data)
         self.assertEqual(serializer.is_valid(), False)
-        self.assertCountEqual(serializer.errors.keys(), ['gender'])
+        self.assertCountEqual(serializer.errors.keys(),
+                              ['gender', 'image_url'])
         self.assertCountEqual(
             [str(x) for x in serializer.errors['gender']],
             ['"UNKNOWN"は有効な選択肢ではありません。']
+        )
+        self.assertCountEqual(
+            [str(x) for x in serializer.errors['image_url']],
+            ['有効なURLを入力してください。']
         )
 
     def test_output_data(self):
@@ -98,6 +104,8 @@ class TestUserSerializer(TestCase):
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
             'gender': 'FEMALE',
+            'description': None,
+            'image_url': None,
             'is_info_filled': False,
         }
         self.assertDictEqual(serializer.data, expected_data)

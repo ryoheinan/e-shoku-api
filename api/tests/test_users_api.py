@@ -52,6 +52,8 @@ class PrivateApiTests(APITestCase):
             'display_name': 'Test San',
             'date_of_birth': '2020-01-01',
             'gender': 'FEMALE',
+            'description': "I'm test user!! Nice to meet you!",
+            'image_url': 'https://test.profile.example.com',
             'password': 'Test_Secret!'
         }
         res = self.client.post(USERS_URL, data)
