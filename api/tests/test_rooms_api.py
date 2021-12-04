@@ -69,6 +69,7 @@ class PrivateApiTests(APITestCase):
         self.assertEqual(Room.objects.get().room_name, 'Test Room')
         data['invite_code'] = None
         data['id'] = res.data['id']
+        data['created_at'] = res.data['created_at']
         self.assertDictEqual(res.data, data)
         res = self.client.delete(f"{ROOMS_URL}{Room.objects.get().id}/")
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)

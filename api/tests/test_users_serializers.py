@@ -108,4 +108,5 @@ class TestUserSerializer(TestCase):
             'image_url': None,
             'is_info_filled': False,
         }
+        expected_data['created_at'] = serializer.data['created_at']
         self.assertDictEqual(serializer.data, expected_data)
