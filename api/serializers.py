@@ -12,8 +12,9 @@ class UserSerializer(serializers.ModelSerializer):
         # 対象モデルクラスを指定
         model = MyUser
         # 利用しないモデルのフィールドを指定
-        exclude = ['password', 'created_at',
-                   'last_login', 'is_active', 'is_admin']
+        exclude = ['password', 'last_login', 'is_active', 'is_admin']
+        # 読み込み専用フィールドを指定
+        read_only_fields = ['created_at']
 
     def update(self, instance, validated_data):
         """
@@ -62,8 +63,8 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         # 対象モデルクラスを指定
         model = Room
-        # 利用しないモデルのフィールドを指定
-        exclude = ['created_at']
+        # 読み込み専用フィールドを指定
+        read_only_fields = ['created_at']
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
