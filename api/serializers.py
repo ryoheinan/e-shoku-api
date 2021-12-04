@@ -63,6 +63,8 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         # 対象モデルクラスを指定
         model = Room
+        # 利用するモデルのフィールドを指定
+        fields = '__all__'
         # 読み込み専用フィールドを指定
         read_only_fields = ['created_at']
 
