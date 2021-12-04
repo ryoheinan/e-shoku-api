@@ -48,7 +48,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = MyUser
         fields = ('internal_id', 'username', 'display_name',
-                  'date_of_birth', 'gender', 'is_info_filled', 'is_active', 'is_admin')
+                  'date_of_birth', 'gender', 'gender', 'description', 'is_info_filled', 'is_active', 'is_admin')
 
 
 class UserAdmin(BaseUserAdmin):
@@ -62,10 +62,11 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('internal_id', 'username', 'display_name',
                     'date_of_birth', 'gender', 'is_info_filled', 'is_admin')
     list_filter = ('is_admin',)
+    readonly_fields = ('id', 'created_at')
     fieldsets = (
         (None, {'fields': ('internal_id', 'password')}),
         ('Personal info', {
-         'fields': ('username', 'display_name', 'date_of_birth', 'gender', 'is_info_filled')}),
+         'fields': ('id', 'username', 'display_name', 'date_of_birth', 'gender', 'description', 'image_url', 'created_at', 'is_info_filled')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -73,7 +74,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('internal_id', 'username', 'display_name', 'date_of_birth', 'gender', 'is_info_filled', 'password1', 'password2'),
+            'fields': ('internal_id', 'username', 'display_name', 'date_of_birth', 'gender', 'gender', 'description', 'is_info_filled', 'password1', 'password2'),
         }),
     )
     search_fields = ('internal_id',)
