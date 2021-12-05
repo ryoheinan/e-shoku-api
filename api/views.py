@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, status, views
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from django_filters import rest_framework as filters
 from .models import MyUser, Room
 from .serializers import UserIdSerializer, UserSerializer, RoomSerializer
 
@@ -106,6 +107,16 @@ class UserRetrieveUpdateDestroyAPIView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class RoomFilter(filters.FilterSet):
+    """
+    ルームモデルのフィルタクラス
+    """
+
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+
 class RoomAPIView(views.APIView):
     """
     ルームモデルの取得(一覧)・登録APIクラス
@@ -117,10 +128,11 @@ class RoomAPIView(views.APIView):
         ルームモデルの取得(一覧)APIに対応するハンドラメソッド
         """
 
-        # モデルオブジェクトの一覧を取得
-        room_list = Room.objects.filter(is_private=False)
+        # モデルオブジェクトの一覧をフィルタリング
+        filterset = RoomFilter(request.query_params,
+                               queryset=Room.objects.filter(is_private=False).order_by('datetime'))
         # シリアライザオブジェクトを作成
-        serializer = RoomSerializer(instance=room_list, many=True)
+        serializer = RoomSerializer(instance=filterset.qs, many=True)
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_200_OK)
 
