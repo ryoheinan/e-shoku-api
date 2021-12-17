@@ -60,6 +60,7 @@ class PrivateApiTests(APITestCase):
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
             'capacity': 100,
+            'meeting_url': 'https://meet.google.com/test-room',
             'topic': 'game,music',
             'is_private': False
         }
@@ -67,6 +68,8 @@ class PrivateApiTests(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Room.objects.count(), 1)
         self.assertEqual(Room.objects.get().room_name, 'Test Room')
+        self.assertEqual(res.data['meeting_url'],
+                         'https://meet.google.com/test-room')
         data['invite_code'] = None
         data['id'] = res.data['id']
         data['created_at'] = res.data['created_at']
@@ -77,7 +80,7 @@ class PrivateApiTests(APITestCase):
 
     def test_users_unauthorized(self):
         """
-        他ユーザーアクセス時のPATCH・DELETE検証（異常系）
+        他ユーザーアクセス時のGET・PATCH・DELETE検証（異常系）
         """
 
         other_user_room = Room.objects.create(
@@ -91,6 +94,8 @@ class PrivateApiTests(APITestCase):
         data = {
             'room_name': 'New!! Test Room',
         }
+        res = self.client.get(f"{ROOMS_URL}{other_user_room.id}/")
+        self.assertFalse('meeting_url' in res.data)
         res = self.client.patch(f"{ROOMS_URL}{other_user_room.id}/", data)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         res = self.client.delete(f"{ROOMS_URL}{other_user_room.id}/")

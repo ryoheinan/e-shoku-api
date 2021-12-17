@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 from .models import MyUser, Room
-from .serializers import UserIdSerializer, UserSerializer, RoomSerializer
+from .serializers import RoomFullSerializer, UserIdSerializer, UserSerializer, RoomSerializer
 
 
 class UserAPIView(views.APIView):
@@ -114,7 +114,7 @@ class RoomFilter(filters.FilterSet):
 
     class Meta:
         model = Room
-        fields = '__all__'
+        exclude = ['meeting_url']
 
 
 class RoomAPIView(views.APIView):
@@ -142,7 +142,7 @@ class RoomAPIView(views.APIView):
         """
 
         # 子ラリアライザオブジェクトを作成
-        serializer = RoomSerializer(data=request.data)
+        serializer = RoomFullSerializer(data=request.data)
         # バリデーション
         serializer.is_valid(raise_exception=True)
         # モデルオブジェクトを登録
@@ -164,8 +164,11 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
 
         # モデルオブジェクトを取得
         room = get_object_or_404(Room, pk=pk)
-        # シリアライザオブジェクトを作成
-        serializer = RoomSerializer(instance=room)
+        # 主催者・参加者のみがmeeting_urlを参照できるようにする
+        if request.user not in room.guests.all() and request.user not in room.hosts.all():
+            serializer = RoomSerializer(instance=room)
+        else:
+            serializer = RoomFullSerializer(instance=room)
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -179,7 +182,7 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         if not room.hosts.filter(pk=request.user.id).exists():
             raise exceptions.AuthenticationFailed('Unauthorized access')
         # シリアライザオブジェクトを作成
-        serializer = RoomSerializer(instance=room, data=request.data)
+        serializer = RoomFullSerializer(instance=room, data=request.data)
         # バリデーション
         serializer.is_valid(raise_exception=True)
         # モデルオブジェクトを更新
@@ -197,7 +200,7 @@ class RoomRetrieveUpdateDestroyAPIView(views.APIView):
         if not room.hosts.filter(pk=request.user.id).exists():
             raise exceptions.AuthenticationFailed('Unauthorized access')
         # モデルオブジェクトを作成
-        serializer = RoomSerializer(
+        serializer = RoomFullSerializer(
             instance=room, data=request.data, partial=True)
         # バリデーション
         serializer.is_valid(raise_exception=True)
