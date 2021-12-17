@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 from .models import MyUser, Room
-from .serializers import RoomFullSerializer, UserIdSerializer, UserSerializer, RoomSerializer
+from .serializers import UserIdSerializer, UserSerializer, RoomSerializer, RoomFullSerializer
 
 
 class UserAPIView(views.APIView):
@@ -141,7 +141,7 @@ class RoomAPIView(views.APIView):
         ルームモデルの登録APIに対応するハンドラメソッド
         """
 
-        # 子ラリアライザオブジェクトを作成
+        # シリアライザオブジェクトを作成
         serializer = RoomFullSerializer(data=request.data)
         # バリデーション
         serializer.is_valid(raise_exception=True)
