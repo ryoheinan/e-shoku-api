@@ -2,7 +2,7 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 import uuid
 
 
@@ -101,6 +101,9 @@ class Room(models.Model):
     class Meta:
         db_table = 'room'
 
+    meeting_url_regex = RegexValidator(
+        regex=r'^https://(meet.google.com|[A-Za-z0-9]+.zoom.us)/[A-Za-z0-9/?=-]+$')
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     hosts = models.ManyToManyField(
         MyUser, verbose_name='主催者', related_name='host_users')
@@ -111,6 +114,8 @@ class Room(models.Model):
     datetime = models.DateTimeField(verbose_name='開催日時', null=True, blank=True)
     capacity = models.IntegerField(
         verbose_name='定員', validators=[MinValueValidator(1)], default=10)
+    meeting_url = models.CharField(
+        verbose_name='ミーティングURL', validators=[meeting_url_regex], max_length=256, blank=True)
     topic = models.TextField(verbose_name='トピック', null=True, blank=True)
     invite_code = models.IntegerField(
         verbose_name='招待コード', unique=True, null=True, blank=True)
