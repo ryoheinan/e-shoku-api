@@ -64,7 +64,7 @@ class RoomSerializer(serializers.ModelSerializer):
         # 対象モデルクラスを指定
         model = Room
         # 利用するモデルのフィールドを指定
-        fields = '__all__'
+        exclude = ['meeting_url']
         # 読み込み専用フィールドを指定
         read_only_fields = ['created_at']
 
@@ -78,6 +78,16 @@ class RoomSerializer(serializers.ModelSerializer):
             ret['hosts_count'] = instance.hosts.all().count()
             ret['guests_count'] = instance.guests.all().count()
         return ret
+
+
+class RoomFullSerializer(RoomSerializer):
+    """
+    ルームモデル用シリアライザ（全フィールドを提供）
+    """
+
+    class Meta(RoomSerializer.Meta):
+        exclude = []
+        fields = '__all__'
 
 
 class RoomListSerializer(serializers.ListSerializer):
