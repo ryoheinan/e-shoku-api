@@ -249,7 +249,7 @@ class RoomJoinAPIView(views.APIView):
         except ValueError as e:
             raise exceptions.ValidationError({"detail": e})
         # レスポンスオブジェクトを返す
-        return Response(status=status.HTTP_200_OK)
+        return Response({'status': 'successfully joined'}, status=status.HTTP_200_OK)
 
 
 class RoomLeaveAPIView(views.APIView):
@@ -277,4 +277,4 @@ class RoomLeaveAPIView(views.APIView):
         except ValueError as e:
             raise exceptions.ValidationError({"detail": e})
         # レスポンスオブジェクトを返す
-        return Response(status=status.HTTP_200_OK)
+        return Response({'status': 'successfully left'}, status=status.HTTP_200_OK)
