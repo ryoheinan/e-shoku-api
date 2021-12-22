@@ -135,7 +135,7 @@ class RoomAPIView(views.APIView):
         if related_user:
             related_user = urllib.parse.unquote(related_user)
             roomData = Room.objects.filter(
-                Q(hosts=related_user) | Q(guests=related_user)).distinct().order_by('datetime')
+                Q(hosts=related_user) | Q(guests=related_user)).distinct().order_by('-datetime')
             serializer = RoomSerializer(instance=roomData, many=True)
         else:
             # モデルオブジェクトの一覧をフィルタリング
