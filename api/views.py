@@ -3,6 +3,8 @@ from rest_framework import exceptions, status, views
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
+from django.db.models import Q
+import urllib.parse
 from .models import MyUser, Room
 from .serializers import UserIdSerializer, UserSerializer, RoomSerializer, RoomFullSerializer
 
@@ -128,11 +130,19 @@ class RoomAPIView(views.APIView):
         ルームモデルの取得(一覧)APIに対応するハンドラメソッド
         """
 
-        # モデルオブジェクトの一覧をフィルタリング
-        filterset = RoomFilter(request.query_params,
-                               queryset=Room.objects.filter(is_private=False).order_by('datetime'))
-        # シリアライザオブジェクトを作成
-        serializer = RoomSerializer(instance=filterset.qs, many=True)
+        # related_userが設定されている場合は、そのユーザーが関係するルームを取得
+        related_user = request.query_params.get('related_user')
+        if related_user:
+            related_user = urllib.parse.unquote(related_user)
+            roomData = Room.objects.filter(
+                Q(hosts=related_user) | Q(guests=related_user)).distinct().order_by('datetime')
+            serializer = RoomSerializer(instance=roomData, many=True)
+        else:
+            # モデルオブジェクトの一覧をフィルタリング
+            filterset = RoomFilter(request.query_params,
+                                   queryset=Room.objects.filter(is_private=False).order_by('datetime'))
+            # シリアライザオブジェクトを作成
+            serializer = RoomSerializer(instance=filterset.qs, many=True)
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -249,7 +259,7 @@ class RoomJoinAPIView(views.APIView):
         except ValueError as e:
             raise exceptions.ValidationError({"detail": e})
         # レスポンスオブジェクトを返す
-        return Response(status=status.HTTP_200_OK)
+        return Response({'status': 'successfully joined'}, status=status.HTTP_200_OK)
 
 
 class RoomLeaveAPIView(views.APIView):
@@ -277,4 +287,4 @@ class RoomLeaveAPIView(views.APIView):
         except ValueError as e:
             raise exceptions.ValidationError({"detail": e})
         # レスポンスオブジェクトを返す
-        return Response(status=status.HTTP_200_OK)
+        return Response({'status': 'successfully left'}, status=status.HTTP_200_OK)
