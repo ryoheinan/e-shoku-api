@@ -140,7 +140,7 @@ class RoomAPIView(views.APIView):
         else:
             # モデルオブジェクトの一覧をフィルタリング
             filterset = RoomFilter(request.query_params,
-                                   queryset=Room.objects.filter(is_private=False).order_by('-datetime'))
+                                   queryset=Room.objects.filter(is_private=False).order_by('datetime'))
             # シリアライザオブジェクトを作成
             serializer = RoomSerializer(instance=filterset.qs, many=True)
         # レスポンスオブジェクトを返す
