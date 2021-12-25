@@ -114,6 +114,8 @@ class RoomFilter(filters.FilterSet):
     ルームモデルのフィルタクラス
     """
 
+    datetime = filters.DateTimeFilter(lookup_expr='gte')
+
     class Meta:
         model = Room
         exclude = ['meeting_url']
@@ -134,15 +136,15 @@ class RoomAPIView(views.APIView):
         related_user = request.query_params.get('related_user')
         if related_user:
             related_user = urllib.parse.unquote(related_user)
-            roomData = Room.objects.filter(
-                Q(hosts=related_user) | Q(guests=related_user)).distinct().order_by('-datetime')
-            serializer = RoomSerializer(instance=roomData, many=True)
+            room_data = Room.objects.filter(Q(hosts=related_user) | Q(
+                guests=related_user)).distinct().order_by('-datetime')
+            filterset = RoomFilter(request.query_params, queryset=room_data)
         else:
             # モデルオブジェクトの一覧をフィルタリング
             filterset = RoomFilter(request.query_params,
                                    queryset=Room.objects.filter(is_private=False).order_by('datetime'))
-            # シリアライザオブジェクトを作成
-            serializer = RoomSerializer(instance=filterset.qs, many=True)
+        # シリアライザオブジェクトを作成
+        serializer = RoomSerializer(instance=filterset.qs, many=True)
         # レスポンスオブジェクトを返す
         return Response(serializer.data, status.HTTP_200_OK)
 
