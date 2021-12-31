@@ -136,6 +136,8 @@ class RoomAPIView(views.APIView):
         related_user = request.query_params.get('related_user')
         if related_user:
             related_user = urllib.parse.unquote(related_user)
+            if related_user != str(request.user.id):
+                raise exceptions.AuthenticationFailed('Unauthorized access')
             room_data = Room.objects.filter(Q(hosts=related_user) | Q(
                 guests=related_user)).distinct().order_by('-datetime')
             filterset = RoomFilter(request.query_params, queryset=room_data)
