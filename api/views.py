@@ -132,14 +132,23 @@ class RoomAPIView(views.APIView):
         ルームモデルの取得(一覧)APIに対応するハンドラメソッド
         """
 
-        # related_userが設定されている場合は、そのユーザーが関係するルームを取得
+        # query_paramsにrelated_userが含まれている場合は、そのユーザーに関連するルームを取得する
         related_user = request.query_params.get('related_user')
+        # query_paramsにqが含まれている場合は、その文字列に関連するルームを取得する
+        keyword = request.query_params.get('q')
         if related_user:
             related_user = urllib.parse.unquote(related_user)
+            # 非公開ルームが含まれるため認証済みユーザーのみルーム情報を取得する
             if related_user != str(request.user.id):
                 raise exceptions.AuthenticationFailed('Unauthorized access')
             room_data = Room.objects.filter(Q(hosts=related_user) | Q(
                 guests=related_user)).distinct().order_by('-datetime')
+            filterset = RoomFilter(request.query_params, queryset=room_data)
+        elif keyword:
+            keyword = urllib.parse.unquote(keyword)
+            # 大文字小文字区別なく、部分一致で検索する
+            room_data = Room.objects.filter(Q(room_name__icontains=keyword) | Q(
+                description__icontains=keyword), is_private=False).distinct().order_by('-datetime')
             filterset = RoomFilter(request.query_params, queryset=room_data)
         else:
             # モデルオブジェクトの一覧をフィルタリング
