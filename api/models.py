@@ -109,7 +109,7 @@ class Room(models.Model):
         MyUser, verbose_name='主催者', related_name='host_users')
     guests = models.ManyToManyField(
         MyUser, verbose_name='参加者', blank=True, related_name='guest_users')
-    room_name = models.CharField(verbose_name='ルーム名', max_length=128)
+    room_title = models.CharField(verbose_name='ルーム名', max_length=128)
     description = models.TextField(verbose_name='ルームの説明')
     datetime = models.DateTimeField(verbose_name='開催日時', null=True, blank=True)
     capacity = models.IntegerField(
@@ -123,7 +123,7 @@ class Room(models.Model):
     created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
 
     def __str__(self):
-        return self.room_name
+        return self.room_title
 
     def join(self, user):
         """

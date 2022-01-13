@@ -17,7 +17,7 @@ class TestRoomSerializer(TestCase):
         input_data = {
             'hosts': [self.user.id],
             'guests': [],
-            'room_name': 'Test Room 1234',
+            'room_title': 'Test Room 1234',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
             'capacity': 100,
@@ -28,15 +28,15 @@ class TestRoomSerializer(TestCase):
         serializer = RoomSerializer(data=input_data)
         self.assertEqual(serializer.is_valid(), True)
 
-    def test_input_invalid_if_room_name_is_blank(self):
+    def test_input_invalid_if_room_title_is_blank(self):
         """
-        RoomSerializerのroom_nameバリデーション確認（異常系）
+        RoomSerializerのroom_titleバリデーション確認（異常系）
         """
 
         input_data = {
             'hosts': [self.user.id],
             'guests': [self.user.id],
-            'room_name': '',
+            'room_title': '',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
             'capacity': 0,
@@ -47,9 +47,9 @@ class TestRoomSerializer(TestCase):
         serializer = RoomSerializer(data=input_data)
         self.assertEqual(serializer.is_valid(), False)
         self.assertCountEqual(serializer.errors.keys(),
-                              ['room_name', 'capacity'])
+                              ['room_title', 'capacity'])
         self.assertCountEqual(
-            [str(x) for x in serializer.errors['room_name']],
+            [str(x) for x in serializer.errors['room_title']],
             ['この項目は空にできません。']
         )
         self.assertRaisesMessage(ValidationError, ['この値は1以上にしてください。'])
