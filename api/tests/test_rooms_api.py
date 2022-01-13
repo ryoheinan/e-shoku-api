@@ -25,7 +25,7 @@ class PublicApiTests(APITestCase):
         data = {
             'hosts': [self.user.id],
             'guests': [],
-            'room_name': 'Test Room',
+            'room_title': 'Test Room',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
             'capacity': 100,
@@ -56,7 +56,7 @@ class PrivateApiTests(APITestCase):
         data = {
             'hosts': [self.user.id],
             'guests': [self.user.id],
-            'room_name': 'Test Room',
+            'room_title': 'Test Room',
             'description': 'This is a test room',
             'datetime': '2021-08-20T09:28:33+09:00',
             'capacity': 100,
@@ -67,7 +67,7 @@ class PrivateApiTests(APITestCase):
         res = self.client.post(ROOMS_URL, data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Room.objects.count(), 1)
-        self.assertEqual(Room.objects.get().room_name, 'Test Room')
+        self.assertEqual(Room.objects.get().room_title, 'Test Room')
         self.assertEqual(res.data['meeting_url'],
                          'https://meet.google.com/test-room')
         data['invite_code'] = None
@@ -84,7 +84,7 @@ class PrivateApiTests(APITestCase):
         """
 
         other_user_room = Room.objects.create(
-            room_name='Test Room',
+            room_title='Test Room',
             description='This is a test room',
             datetime='2021-08-20T09:28:33+09:00',
             capacity=100,
@@ -92,7 +92,7 @@ class PrivateApiTests(APITestCase):
         )
         other_user_room.hosts.add(self.other_user)
         data = {
-            'room_name': 'New!! Test Room',
+            'room_title': 'New!! Test Room',
         }
         res = self.client.get(f"{ROOMS_URL}{other_user_room.id}/")
         self.assertFalse('meeting_url' in res.data)
@@ -108,7 +108,7 @@ class PrivateApiTests(APITestCase):
         """
 
         room = Room.objects.create(
-            room_name='Test Room',
+            room_title='Test Room',
             description='This is a test room',
             datetime='2021-08-20T09:28:33+09:00',
             capacity=100,

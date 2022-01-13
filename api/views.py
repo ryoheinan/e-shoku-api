@@ -147,7 +147,7 @@ class RoomAPIView(views.APIView):
         elif keyword:
             keyword = urllib.parse.unquote(keyword)
             # 大文字小文字区別なく、部分一致で検索する
-            room_data = Room.objects.filter(Q(room_name__icontains=keyword) | Q(
+            room_data = Room.objects.filter(Q(room_title__icontains=keyword) | Q(
                 description__icontains=keyword), is_private=False).distinct().order_by('-datetime')
             filterset = RoomFilter(request.query_params, queryset=room_data)
         else:
