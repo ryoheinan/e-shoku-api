@@ -6,7 +6,7 @@ authors = ["Ryohei Nagasawa <49315610+ryoheinan@users.noreply.github.com>", "Rik
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "^3.2.6"
+Django = "^3.2.12"
 djangorestframework = "^3.12.4"
 psycopg2-binary = "^2.9.1"
 PyJWT = "^2.1.0"
